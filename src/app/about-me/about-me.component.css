@@ -1,0 +1,101 @@
+.schedule-section {
+  padding: 80px 20px;
+  background: linear-gradient(135deg, #0f0f11 0%, #1a1a24 100%);
+  min-height: calc(100vh - 80px);
+  color: #ffffff;
+}
+
+.schedule-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.schedule-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.badge-tag {
+  background: rgba(255, 42, 112, 0.15);
+  color: #ff2a70;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  display: inline-block;
+  margin-bottom: 15px;
+  border: 1px solid rgba(255, 42, 112, 0.3);
+}
+
+.schedule-header h2 {
+  font-size: 2.8rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 12px;
+}
+
+.subtitle {
+  color: #a0a0b0;
+  font-size: 1.1rem;
+}
+
+.schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.schedule-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.schedule-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(255, 42, 112, 0.4);
+  box-shadow: 0 12px 30px rgba(255, 42, 112, 0.15);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.card-header h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.class-badge {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.class-badge.fitness { background: rgba(0, 230, 153, 0.15); color: #00e699; }
+.class-badge.toning { background: rgba(0, 170, 255, 0.15); color: #00aaff; }
+.class-badge.party-tag { background: rgba(255, 42, 112, 0.2); color: #ff2a70; }
+
+.class-title {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  color: #ffffff;
+}
+
+.instructor {
+  font-size: 0.88rem;
+  color: #aaaab8;
+}

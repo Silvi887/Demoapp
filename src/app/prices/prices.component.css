@@ -1,0 +1,149 @@
+.schedule-section {
+  padding: 80px 20px;
+  background: linear-gradient(135deg, #0f0f11 0%, #1a1a24 100%);
+  min-height: calc(100vh - 80px);
+  color: #ffffff;
+}
+
+.schedule-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.schedule-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.badge-tag {
+  background: rgba(255, 42, 112, 0.15);
+  color: #ff2a70;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  display: inline-block;
+  margin-bottom: 15px;
+  border: 1px solid rgba(255, 42, 112, 0.3);
+}
+
+.schedule-header h2 {
+  font-size: 2.8rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 12px;
+}
+
+.subtitle {
+  color: #a0a0b0;
+  font-size: 1.1rem;
+}
+
+.schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.schedule-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.schedule-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(255, 42, 112, 0.4);
+  box-shadow: 0 12px 30px rgba(255, 42, 112, 0.15);
+}
+
+.schedule-card.party {
+  background: linear-gradient(145deg, rgba(255, 42, 112, 0.1), rgba(255, 140, 0, 0.05));
+  border: 1px solid rgba(255, 42, 112, 0.3);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.card-header h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.class-badge {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.class-badge.fitness { background: rgba(0, 230, 153, 0.15); color: #00e699; }
+.class-badge.toning { background: rgba(0, 170, 255, 0.15); color: #00aaff; }
+.class-badge.party-tag { background: rgba(255, 42, 112, 0.2); color: #ff2a70; }
+
+.time-box {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.time {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.location {
+  font-size: 0.85rem;
+  color: #8888a0;
+}
+
+.class-title {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  color: #ffffff;
+}
+
+.instructor {
+  font-size: 0.88rem;
+  color: #aaaab8;
+  margin-bottom: 20px;
+}
+
+.btn-book {
+  display: block;
+  text-align: center;
+  padding: 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.schedule-card:hover .btn-book {
+  background: #ff2a70;
+  color: #ffffff;
+}
+
+.btn-party {
+  background: #ff2a70;
+}
