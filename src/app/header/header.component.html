@@ -1,19 +1,11 @@
 <header class="header">
-  <div class="logo">
-    <a routerLink="/">Zumba<span>Fitness</span></a>
-  </div>
-
-  <nav class="nav-menu">
-    <ul>
-      <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Начало</a></li>
-      <li><a routerLink="/schedule" routerLinkActive="active">График</a></li>
-      <li><a routerLink="/about-me" routerLinkActive="active">За мен</a></li>    
-      <li><a routerLink="/prices"  routerLinkActive="active">Цени</a></li>
-      <li><a routerLink="/contacts" routerLinkActive="active">Контакти</a></li>
-    </ul>
-  </nav>
-
-  <div class="header-cta">
-    <a href="#join" class="btn-primary">Запиши се</a>
-  </div>
+  <div class="logo"><a routerLink="/">FIT<span>FLOW</span></a></div>
+  <nav class="nav-menu"><ul>
+    <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Начало</a></li>
+    <li><a routerLink="/catalog" routerLinkActive="active">Каталог</a></li>
+    <li><a routerLink="/dashboard" routerLinkActive="active">Моите тренировки</a></li>
+    <li><a routerLink="/login" routerLinkActive="active">Вход</a></li>
+    <li><a routerLink="/register" routerLinkActive="active">Регистрация</a></li>
+  </ul></nav>
+  <a routerLink="/catalog" class="btn-primary">Започни</a>
 </header>

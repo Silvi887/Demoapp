@@ -1,15 +1,14 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './home/home.component';
-import { ScheduleComponent } from './schedule/schedule.component';
-import { AboutMeComponent } from './about-me/about-me.component';
-import { PricesComponent } from './prices/prices.component';
-import { ContactsComponent } from './contacts/contacts.component';
-
+import { authGuard, guestGuard } from './exam/guards/auth.guards';
+import { HomePage, CatalogPage, DetailsPage, AuthPage, DashboardPage } from './exam/pages/pages.component';
+import { NotFoundPage } from './exam/pages/not-found.component';
 
 export const routes: Routes = [
-    { path: '', component: HomeComponent },         // Тук се зарежда Hero секцията
-  { path: 'schedule', component: ScheduleComponent }, // Тук се зарежда само графикът
-  { path: 'about-me', component: AboutMeComponent } ,
-  { path:   'prices', component: PricesComponent },
-  {path: 'contacts', component: ContactsComponent}
+  { path: '', component: HomePage },
+  { path: 'catalog', component: CatalogPage },
+  { path: 'catalog/:id', component: DetailsPage },
+  { path: 'login', component: AuthPage, canActivate: [guestGuard], data: { register: false } },
+  { path: 'register', component: AuthPage, canActivate: [guestGuard], data: { register: true } },
+  { path: 'dashboard', component: DashboardPage, canActivate: [authGuard] },
+  { path: '**', component: NotFoundPage }
 ];
