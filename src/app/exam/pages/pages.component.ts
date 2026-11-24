@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Workout, AppUser } from '../models/workout.model';
+import { Workout, AppUser, LEVELS, LevelInfo } from '../models/workout.model';
 import { AuthService } from '../services/auth.service';
 import { WorkoutService } from '../services/workout.service';
 import { LevelLabelPipe } from '../pipes/level-label.pipe';
@@ -12,23 +12,69 @@ import { LevelLabelPipe } from '../pipes/level-label.pipe';
 <section class="features"><article><b>01</b><h3>Открий</h3><p>Разгледай тренировъчни идеи от външен API.</p></article><article><b>02</b><h3>Създай</h3><p>Добавяй и управлявай личните си тренировки.</p></article><article><b>03</b><h3>Постигай</h3><p>Изгради постоянство с движение всеки ден.</p></article></section>` })
 export class HomePage {}
 
-@Component({ standalone: true, imports: [CommonModule, RouterLink, LevelLabelPipe], template: `
-<section class="page"><div class="page-head"><div><p class="eyebrow">LIBRARY</p><h1>Каталог тренировки</h1><p>Избери активност, която ти подхожда.</p></div><a class="btn" routerLink="/dashboard">+ Моя тренировка</a></div>
-<div *ngIf="loading" class="notice">Зареждаме каталога…</div><div *ngIf="error" class="error">{{error}}</div>
-<div class="cards"><article class="workout-card" *ngFor="let workout of workouts"><span class="tag">{{workout.level | levelLabel}}</span><h2>{{workout.title | titlecase}}</h2><p>{{workout.description}}</p><footer><span>{{workout.duration}} мин.</span><a [routerLink]="['/catalog', workout.id]">Детайли →</a></footer></article></div>
-<div *ngIf="!loading && workouts.length === 0" class="notice">Няма налични тренировки.</div></section>` })
+@Component({ standalone: true, imports: [CommonModule, RouterLink], template: `
+<section class="page"><div class="page-head"><div><p class="eyebrow">LIBRARY</p><h1>Каталог тренировки</h1><p>Избери своето ниво и открий програма, която ти подхожда.</p></div><a class="btn" routerLink="/dashboard">+ Моя тренировка</a></div>
+<div *ngIf="error" class="error">{{error}}</div>
+<div class="level-grid"><a class="level-card" *ngFor="let lvl of levels; let i = index" [routerLink]="['/catalog/level', lvl.slug]">
+<div class="level-img"><img [src]="lvl.image" [alt]="lvl.title" loading="lazy"><b>0{{i + 1}}</b></div>
+<div class="level-body"><span class="tag">{{lvl.subtitle}}</span><h2>{{lvl.title}}</h2><p>{{lvl.description}}</p><footer><span>{{counts[lvl.level] || 0}} тренировки</span><span class="link">Разгледай →</span></footer></div></a></div></section>` })
 export class CatalogPage implements OnInit {
- workouts: Workout[]=[]; loading=true; error='';
+ levels = LEVELS; counts: Record<string, number> = {}; error='';
  constructor(private service: WorkoutService) {}
- ngOnInit(): void { this.service.getAll().subscribe({ next: items => { this.workouts=items; this.loading=false; }, error: err => { this.error=err.message; this.loading=false; } }); }
+ ngOnInit(): void { this.service.getAll().subscribe({ next: items => { this.counts = items.reduce((acc, w) => ({ ...acc, [w.level]: (acc[w.level] ?? 0) + 1 }), {} as Record<string, number>); }, error: err => this.error = err.message }); }
 }
 
 @Component({ standalone: true, imports: [CommonModule, RouterLink, LevelLabelPipe], template: `
-<section class="page narrow"><a routerLink="/catalog" class="back">← Назад към каталога</a><div *ngIf="workout"><p class="eyebrow">WORKOUT DETAILS</p><span class="tag">{{workout.level | levelLabel}}</span><h1>{{workout.title | titlecase}}</h1><p class="lead">{{workout.description}}</p><div class="detail-stats"><span>⏱ {{workout.duration}} минути</span><span>✦ {{workout.category}}</span></div><a class="btn" routerLink="/dashboard">Добави своя тренировка</a></div><p *ngIf="error" class="error">{{error}}</p></section>` })
+<section class="page" *ngIf="info; else missing"><a routerLink="/catalog" class="back">← Всички нива</a>
+<nav class="level-tabs"><a *ngFor="let lvl of levels" [routerLink]="['/catalog/level', lvl.slug]" [class.active]="lvl.slug === info.slug">{{lvl.title}}</a></nav>
+<div class="page-head"><div><p class="eyebrow">НИВО: {{info.title | uppercase}}</p><h1>{{info.subtitle}}</h1><p class="level-intro">{{info.description}}</p></div></div>
+<div *ngIf="loading" class="notice">Зареждаме тренировките…</div><div *ngIf="error" class="error">{{error}}</div>
+<div class="cards"><article class="workout-card" *ngFor="let workout of workouts">
+<img *ngIf="workout.exercises?.length" class="card-img" [src]="workout.exercises![0].images[0]" [alt]="workout.title" loading="lazy">
+<span class="tag">{{workout.category}}</span><h2>{{workout.title}}</h2><p>{{workout.description}}</p>
+<ul class="card-meta" *ngIf="workout.exercises?.length"><li>{{workout.exercises!.length}} упражнения</li><li>{{workout.equipment}}</li></ul>
+<footer><span>{{workout.duration}} мин. · {{workout.level | levelLabel}}</span><a [routerLink]="['/catalog', workout.id]">Детайли →</a></footer></article></div>
+<div *ngIf="!loading && workouts.length === 0" class="notice">Няма тренировки за това ниво.</div></section>
+<ng-template #missing><section class="page narrow"><p class="error">Нивото не е намерено.</p><a routerLink="/catalog">← Към каталога</a></section></ng-template>` })
+export class LevelPage implements OnInit {
+ levels = LEVELS; info?: LevelInfo; workouts: Workout[]=[]; loading=true; error='';
+ private route = inject(ActivatedRoute); private service = inject(WorkoutService);
+ ngOnInit(): void {
+  this.route.paramMap.subscribe(params => {
+   this.info = LEVELS.find(l => l.slug === params.get('level'));
+   if (!this.info) return;
+   this.loading = true; this.error = '';
+   this.service.getByLevel(this.info.level).subscribe({ next: items => { this.workouts = items; this.loading = false; }, error: err => { this.error = err.message; this.loading = false; } });
+  });
+ }
+}
+
+@Component({ standalone: true, imports: [CommonModule, RouterLink, LevelLabelPipe], template: `
+<section class="page"><a [routerLink]="levelSlug ? ['/catalog/level', levelSlug] : ['/catalog']" class="back">← Назад към {{workout ? 'ниво ' + (workout.level | levelLabel) : 'каталога'}}</a>
+<div *ngIf="workout"><p class="eyebrow">WORKOUT DETAILS</p><span class="tag">{{workout.level | levelLabel}}</span><h1>{{workout.title}}</h1>
+<p class="lead">{{workout.overview || workout.description}}</p>
+<div class="detail-stats"><span>⏱ {{workout.duration}} минути</span><span>✦ {{workout.category}}</span><span *ngIf="workout.exercises?.length">▤ {{workout.exercises!.length}} упражнения</span></div>
+<div class="info-grid" *ngIf="workout.goal"><div><small>Цел</small><b>{{workout.goal}}</b></div><div><small>Оборудване</small><b>{{workout.equipment}}</b></div><div><small>Честота</small><b>{{workout.frequency}}</b></div></div>
+
+<ng-container *ngIf="workout.exercises?.length">
+<h2 class="section-title">Последователност на упражненията</h2>
+<ol class="sequence"><li *ngFor="let ex of workout.exercises; let i = index; let last = last"><a [href]="'#ex-' + (i + 1)" (click)="scrollTo($event, i + 1)"><img [src]="ex.images[0]" [alt]="ex.name" loading="lazy"><span>{{i + 1}}. {{ex.name}}</span></a><i *ngIf="!last">→</i></li></ol>
+
+<div class="phase"><b>Загрявка</b><p>{{workout.warmup}}</p></div>
+<article class="exercise" *ngFor="let ex of workout.exercises; let i = index" [id]="'ex-' + (i + 1)">
+<header><span class="step-no">{{i + 1}}</span><div><h3>{{ex.name}}</h3><small>{{ex.muscles}}</small></div></header>
+<div class="ex-images"><figure><img [src]="ex.images[0]" [alt]="ex.name + ' – начална позиция'" loading="lazy"><figcaption>1. Начална позиция</figcaption></figure><span class="arrow">→</span><figure><img [src]="ex.images[1]" [alt]="ex.name + ' – крайна позиция'" loading="lazy"><figcaption>2. Крайна позиция</figcaption></figure></div>
+<div class="ex-stats"><span><b>{{ex.sets}}</b> серии</span><span><b>{{ex.reps}}</b></span><span>Почивка <b>{{ex.rest}}</b></span></div>
+<ol class="ex-steps"><li *ngFor="let step of ex.steps">{{step}}</li></ol>
+<p class="tip"><b>Съвет:</b> {{ex.tip}}</p></article>
+<div class="phase"><b>Разпускане</b><p>{{workout.cooldown}}</p></div>
+</ng-container>
+<a class="btn" routerLink="/dashboard">Добави своя тренировка</a></div><p *ngIf="error" class="error">{{error}}</p></section>` })
 export class DetailsPage implements OnInit {
- workout?: Workout; error='';
+ workout?: Workout; error=''; levelSlug?: string;
  constructor(private route: ActivatedRoute, private service: WorkoutService) {}
- ngOnInit(): void { const id=Number(this.route.snapshot.paramMap.get('id')); this.service.getById(id).subscribe(item => { this.workout=item; if (!item) this.error='Тренировката не е намерена.'; }); }
+ ngOnInit(): void { const id=Number(this.route.snapshot.paramMap.get('id')); this.service.getById(id).subscribe(item => { this.workout=item; this.levelSlug = LEVELS.find(l => l.level === item?.level)?.slug; if (!item) this.error='Тренировката не е намерена.'; }); }
+ scrollTo(event: Event, n: number): void { event.preventDefault(); document.getElementById('ex-' + n)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
 }
 
 @Component({ standalone: true, imports: [CommonModule, ReactiveFormsModule, RouterLink], template: `

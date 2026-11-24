@@ -1,11 +1,12 @@
 import { Routes } from '@angular/router';
 import { authGuard, guestGuard } from './exam/guards/auth.guards';
-import { HomePage, CatalogPage, DetailsPage, AuthPage, DashboardPage } from './exam/pages/pages.component';
+import { HomePage, CatalogPage, LevelPage, DetailsPage, AuthPage, DashboardPage } from './exam/pages/pages.component';
 import { NotFoundPage } from './exam/pages/not-found.component';
 
 export const routes: Routes = [
   { path: '', component: HomePage },
   { path: 'catalog', component: CatalogPage },
+  { path: 'catalog/level/:level', component: LevelPage },
   { path: 'catalog/:id', component: DetailsPage },
   { path: 'login', component: AuthPage, canActivate: [guestGuard], data: { register: false } },
   { path: 'register', component: AuthPage, canActivate: [guestGuard], data: { register: true } },
