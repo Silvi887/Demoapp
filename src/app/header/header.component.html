@@ -3,6 +3,7 @@
   <nav class="nav-menu"><ul>
     <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Начало</a></li>
     <li><a routerLink="/catalog" routerLinkActive="active">Каталог</a></li>
+    <li><a routerLink="/nutrition" routerLinkActive="active">Хранителен режим</a></li>
     <li><a routerLink="/dashboard" routerLinkActive="active">Моите тренировки</a></li>
     @if (user(); as currentUser) {
       <li class="user-name">{{ currentUser.displayName || currentUser.email }}</li>
