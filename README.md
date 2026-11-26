@@ -1,9 +1,9 @@
 # FitFlow — Angular Project - Functional Guide
 
-1. ## Application Purpose
+## 1.Application Purpose
 The goal of the application is to help users explore structured workout routines by difficulty level, learn about balanced nutrition plans, and create and manage their own personal workout programs.
 
-2. ## User Roles
+## 2.User Roles
 ### Guest (Not Authenticated User)
 * Can view the Home page
 * Can browse the Workout Catalog by difficulty level (`Beginner`, `Intermediate`, `Advanced`)
@@ -19,7 +19,7 @@ The goal of the application is to help users explore structured workout routines
 * Can delete their own workout records
 * Remains logged in after refreshing the page
 
-3. ## Public Features
+ ## 3.Public Features
 * **Home Page (`/`):** Presents the purpose of FitFlow and provides quick navigation to the catalog.
 * **Catalog Page (`/catalog`):** Displays workout levels along with the total number of available routines per level.
 * **Level Catalog Page (`/catalog/level/:level`):** Lists all workouts for the selected difficulty level with category, duration, and exercise count.
@@ -35,7 +35,7 @@ The goal of the application is to help users explore structured workout routines
 * **Edit Own Workouts:** Users can modify only the workouts they have created (`ownerId` check).
 * **Delete Own Workouts:** Users can remove their own workouts after confirmation.
 
-4. ## Main Application Flow
+ ## 4.Main Application Flow
 4.1. User opens the Home page (`/`).
 4.2. User navigates to the Catalog page (`/catalog`) and selects a difficulty level (`/catalog/level/:level`).
 4.3. User selects a workout card and opens its Details page (`/catalog/:id`) to inspect the exercises.
@@ -44,7 +44,7 @@ The goal of the application is to help users explore structured workout routines
 4.6. Authenticated user creates a new workout record, which is saved and displayed both in their Dashboard and in the public Catalog under the corresponding level.
 4.7. Authenticated user can edit or delete their own workout records at any time.
 
-5. ## Data Structure
+## 5.Data Structure
 ### Workout Object
 * `id` — Unique numeric identifier
 * `title` — Workout title
@@ -61,7 +61,7 @@ The goal of the application is to help users explore structured workout routines
 * `email` — User email address
 * `displayName` — User display name
 
-6. ## Project Architecture
+## 6.Project Architecture
 ```text
 src/app/
 ├── exam/
@@ -80,14 +80,14 @@ src/app/
 └── app.config.ts      # Application providers and HTTP client setup
 ```
 
-7. ## Technologies Used
+ ## 7.Technologies Used
 * **Angular 19** (Standalone Components, Reactive Forms, Angular Router, HttpClient)
 * **TypeScript** (Strict typing and interfaces)
 * **RxJS** (`Observable`, `BehaviorSubject`, `map`, `catchError`, `shareReplay`)
 * **JSON Data Source & Browser LocalStorage** (Asynchronous catalog loading from `public/data/workouts.json` combined with persistent browser storage for user accounts and personal CRUD records)
 * **CSS** (Component and global stylesheets)
 
-8. ## How to Run the Project
+ ## 8.How to Run the Project
 8.1. Clone the repository:
    ```bash
    git clone <repository-url>
