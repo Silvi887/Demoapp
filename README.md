@@ -1,59 +1,108 @@
-# FitFlow — Angular SPA
+# FitFlow — Angular Project - Functional Guide
 
-FitFlow е уеб приложение за разглеждане на идеи за тренировки и управление на лична тренировъчна колекция. Изградено е с Angular 19, TypeScript и RxJS.
+1. ## Application Purpose
+The goal of the application is to help users explore structured workout routines by difficulty level, learn about balanced nutrition plans, and create and manage their own personal workout programs.
 
-## Functional Guide
+2. ## User Roles
+### Guest (Not Authenticated User)
+* Can view the Home page
+* Can browse the Workout Catalog by difficulty level (`Beginner`, `Intermediate`, `Advanced`)
+* Can view full Details of any workout (duration, equipment, warmup, step-by-step exercises, cooldown)
+* Can browse and filter Nutrition plans and vitamin guides
+* Can register a new account or log in
 
-### Purpose
-Приложението помага на посетителите да откриват тренировки, а на регистрираните потребители — да създават и управляват собствените си тренировъчни записи.
+### Authenticated User
+* Has access to all Guest features
+* Can access the private Personal Dashboard (`/dashboard`)
+* Can create new personal workout records
+* Can edit their own workout records
+* Can delete their own workout records
+* Remains logged in after refreshing the page
 
-### Main user flows
-1. Посетител отваря началната страница и преминава към каталога.
-2. В каталога разглежда записи, заредени асинхронно от външен REST API, и отваря детайлна страница чрез идентификатор в URL.
-3. Посетител се регистрира или влиза с имейл и парола.
-4. В личната зона създава, редактира и изтрива само своите записи.
-5. При изход личната зона става недостъпна; след refresh активната сесия се възстановява от browser storage.
+3. ## Public Features
+* **Home Page (`/`):** Presents the purpose of FitFlow and provides quick navigation to the catalog.
+* **Catalog Page (`/catalog`):** Displays workout levels along with the total number of available routines per level.
+* **Level Catalog Page (`/catalog/level/:level`):** Lists all workouts for the selected difficulty level with category, duration, and exercise count.
+* **Workout Details Page (`/catalog/:id`):** Displays comprehensive information for a selected workout, including target goal, required equipment, frequency, exercise sequence, sets, reps, rest intervals, and execution tips.
+* **Nutrition Page (`/nutrition`):** Provides daily meal plans filterable by goal (`All`, `Maintain Form`, `Healthy Start`) and information on essential vitamins and minerals.
+* **Login Page (`/login`):** Allows existing users to sign in using email and password with validation and error feedback.
+* **Registration Page (`/register`):** Allows guests to create a new account using name, email, and password (minimum 6 characters).
+* **Not Found Page (`**`):** Handles invalid URLs with a user-friendly 404 message and navigation back to the home page.
 
-### Core features
-- Public home, catalog, workout details, login and registration.
-- Private dashboard with Create, Read, Update and Delete.
-- Form validation and understandable error messages.
-- Route guards for authenticated and guest-only pages.
-- Responsive layout and empty/loading/error states.
+## Authenticated User Features
+* **Personal Dashboard (`/dashboard`):** Displays all workouts created by the currently logged-in user.
+* **Create Workout:** Authenticated users can add new custom workouts (title, description, category, level, duration) with form validation.
+* **Edit Own Workouts:** Users can modify only the workouts they have created (`ownerId` check).
+* **Delete Own Workouts:** Users can remove their own workouts after confirmation.
 
-### How to interact
-Use the navigation at the top. Select a catalog item to view its details. Register with a name, valid email and password (at least 6 characters), then use the dashboard to manage personal workouts. Records and demo accounts are stored in local browser storage.
+4. ## Main Application Flow
+4.1. User opens the Home page (`/`).
+4.2. User navigates to the Catalog page (`/catalog`) and selects a difficulty level (`/catalog/level/:level`).
+4.3. User selects a workout card and opens its Details page (`/catalog/:id`) to inspect the exercises.
+4.4. User navigates to the Register (`/register`) or Login (`/login`) page and authenticates.
+4.5. User is redirected to the private Dashboard (`/dashboard`).
+4.6. Authenticated user creates a new workout record, which is saved and displayed both in their Dashboard and in the public Catalog under the corresponding level.
+4.7. Authenticated user can edit or delete their own workout records at any time.
 
-## Technical implementation mapped to exam requirements
-- **Public/private structure (20 pts):** public home/catalog/auth; guarded dashboard.
-- **Routing (10 pts):** 6 explicit routes plus wildcard; `/catalog/:id` is parameterized.
-- **Catalog/details & CRUD (30 pts):** external REST catalog and owner-checked CRUD collection.
-- **TypeScript/interfaces (5 pts):** `Workout`, `AppUser`; typed code, no `any`.
-- **RxJS (10 pts):** observable HTTP and auth operations, `map`, `catchError`; `BehaviorSubject`.
-- **Angular concepts (10 pts):** `OnInit`, Angular services, custom `levelLabel` pipe and built-in `titlecase`.
-- **Structure/styling (5 pts):** feature folders and external CSS.
-- **Forms/UX (10 pts):** reactive forms, validators, invalid-input feedback.
-- **Guards (5 pts):** `authGuard`, `guestGuard`.
-- **Error handling (5 pts):** network, invalid input, empty catalog/dashboard.
+5. ## Data Structure
+### Workout Object
+* `id` — Unique numeric identifier
+* `title` — Workout title
+* `description` — Short summary of the routine
+* `category` — Workout category (e.g., Strength, Cardio, Mobility, Fitness)
+* `level` — Difficulty level (`Beginner` | `Intermediate` | `Advanced`)
+* `duration` — Duration in minutes
+* `ownerId` — Identifier of the user who created the record (for user-created workouts)
+* `isLocal` — Flag indicating user-created storage entry
+* `overview`, `goal`, `equipment`, `frequency`, `warmup`, `cooldown`, `exercises` — Optional detailed program fields
 
-## Installation and run
-Requirements: Node.js (compatible with Angular 19) and npm.
+### User Object (`AppUser`)
+* `id` — Unique user identifier (UUID)
+* `email` — User email address
+* `displayName` — User display name
 
-```bash
-npm install
-npm start
+6. ## Project Architecture
+```text
+src/app/
+├── exam/
+│   ├── guards/        # Route protection (authGuard)
+│   ├── models/        # TypeScript interfaces (workout, nutrition)
+│   ├── pages/         # Routed page components (Home, Catalog, Level, Details, Auth, Dashboard, Nutrition, NotFound)
+│   ├── pipes/         # Custom pipes (LevelLabelPipe)
+│   └── services/      # Business logic & data services (AuthService, WorkoutService)
+├── header/            # Application navigation bar
+├── home/              # Additional layout/presentation components
+├── about-me/          # Additional informational section
+├── prices/            # Pricing plans view
+├── schedule/          # Weekly schedule view
+├── contacts/          # Contact information view
+├── app.routes.ts      # Application routing configuration
+└── app.config.ts      # Application providers and HTTP client setup
 ```
 
-Open `http://localhost:4200`. Production build:
+7. ## Technologies Used
+* **Angular 19** (Standalone Components, Reactive Forms, Angular Router, HttpClient)
+* **TypeScript** (Strict typing and interfaces)
+* **RxJS** (`Observable`, `BehaviorSubject`, `map`, `catchError`, `shareReplay`)
+* **JSON Data Source & Browser LocalStorage** (Asynchronous catalog loading from `public/data/workouts.json` combined with persistent browser storage for user accounts and personal CRUD records)
+* **CSS** (Component and global stylesheets)
 
-```bash
-npm run build
-```
-
-## Data source and demo limitations
-The public catalog reads from JSONPlaceholder (`https://jsonplaceholder.typicode.com/posts`). The exam evaluates the front-end; the user collection and demo authentication are stored in `localStorage` so CRUD can be demonstrated without a configured server. This is a frontend demonstration, not production authentication: passwords are not securely stored and browser storage can be modified. For a production project, connect Firebase or a secured backend and enforce ownership on the server.
-
-## Git submission checklist
-- Publish the repository as **public**.
-- Make at least **5 meaningful commits** distributed across at least **3 different days**. Do not create artificial or backdated commits; commit genuine development milestones as you work.
-- Submit the public repository URL in the course Regular Exam section.
+8. ## How to Run the Project
+8.1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd Fitflow-angular-master
+   ```
+8.2. Install dependencies:
+   ```bash
+   npm install
+   ```
+8.3. Start the application:
+   ```bash
+   npm start
+   ```
+   *(or `ng serve`)*
+8.4. Open the application in your browser:
+   ```text
+   http://localhost:4200
+   
